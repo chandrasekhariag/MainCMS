@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Main Page - Case Management</title>
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            width: 98%;
+            margin: auto;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar .logo {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .navbar button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: 0.3s;
+        }
+
+        .navbar button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Search Bar */
+        #search-bar {
+            width: 98%;
+            padding: 10px;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            display: block;
+            border-radius: 5px;
+        }
+
+        /* Case List Table */
+        table {
+            width: 98%;
+            margin: auto;
+            border-collapse: collapse;
+            background-color: white;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pagination button {
+            padding: 8px 12px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .pagination button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+            width: 95%;
+            text-align: left;
+            position: relative;
+        }
+
+        .modal .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .modal form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .modal .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .modal .form-row input, 
+        .modal .form-row select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .modal textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            resize: none;
+            height: 80px;
+        }
+
+        #save-case-btn {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #save-case-btn:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="logo">CMS</div>
+        <div>
+            <button id="create-case-btn">Create Case</button>
+            <button onclick="window.location.href='reports.html'">Reports</button>
+            <button id="logout-btn">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Search Bar -->
+    <input type="text" id="search-bar" placeholder="Search cases...">
+
+    <!-- Case List Table -->
+    <table>
+        <thead>
+            <tr>
+                <th>Staff</th>
+                <th>Mobile Number</th>
+                <th>Name</th>
+                <th>Work</th>
+                <th>Information</th>
+                <th>Pending</th>
+                <th>Remarks</th>
+                <th>Case Status</th>
+            </tr>
+        </thead>
+        <tbody id="cases-list">
+            <!-- Cases will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <!-- Pagination -->
+    <div class="pagination">
+        <button id="prev-btn">Previous</button>
+        <button id="next-btn">Next</button>
+    </div>
+
+    <!-- Case Details Modal -->
+    <div id="case-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Case Details</h2>
+            <form>
+                <!-- Row 1: Staff, Mobile Number, Name -->
+                <div class="form-row">
+                    <input type="text" id="modal-staff" placeholder="Staff">
+                    <input type="text" id="modal-mobile" placeholder="Mobile Number">
+                    <input type="text" id="modal-name" placeholder="Name">
+                </div>
+
+                <!-- Row 2: Work, Information, Pending -->
+                <div class="form-row">
+                    <input type="text" id="modal-work" placeholder="Work">
+                    <input type="text" id="modal-info" placeholder="Information">
+                    <input type="text" id="modal-pending" placeholder="Pending">
+                </div>
+
+                <!-- Row 3: Remarks (Full Width, Bigger Textarea) -->
+                <label>Remarks:</label>
+                <textarea id="modal-remarks" placeholder="Enter remarks..."></textarea>
+
+                <!-- Row 4: Status (Dropdown) -->
+                <label>Status:</label>
+                <select id="modal-status">
+                    <option>Open</option>
+                    <option>Customer Pending</option>
+                    <option>Closed</option>
+                </select>
+
+                <button type="button" id="save-case-btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+
+</body>
+</html>
